@@ -8,7 +8,7 @@
     </div>
     <div class="login-operation">
       <div class="login" v-if="showLogin">
-        <p class="login-item login-username">18252081324</p>
+        <p class="login-item login-username">{{userName}}</p>
         <p class="login-item login-myproject" @click="gotoPage(4)">我的项目</p>
         <p class="login-item logout" @click="logout">退出登录</p>
       </div>
@@ -31,6 +31,9 @@ export default {
     },
     showLogin() {
       return this.$store.state.showLogin;
+    },
+    userName() {
+      return this.$store.state.user.mobile
     }
   },
   created() {
@@ -57,7 +60,9 @@ export default {
     },
     logout() {
       this.$store.commit('changeShowLogin', { value: false });
-      localStorage.removeItem('token', response.token);
+      this.$store.commit('changeUser', {});
+
+      // localStorage.removeItem('token', response.token);
     }
   }
 }

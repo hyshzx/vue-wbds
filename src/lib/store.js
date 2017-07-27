@@ -7,6 +7,7 @@ const store = new Vuex.Store({
     showCollapse: false,
     showBtn: true,
     showLogin: false,
+    user: {},
     project: {}
   },
   getters: {},
@@ -22,6 +23,9 @@ const store = new Vuex.Store({
     },
     changeProject(state, payload) {
       state.project = payload;
+    },
+    changeUser(state, payload) {
+      state.user = payload;
     }
   },
   actions: {

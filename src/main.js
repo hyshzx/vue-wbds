@@ -9,7 +9,8 @@ Vue.config.productionTip = false
 import store from './lib/store.js'
 // axios.defaults.baseURL = 'http://192.168.12.210/';
 /* eslint-disable no-new */
-axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8'
+axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 new Vue({
   el: '#app',
   router,

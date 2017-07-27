@@ -13,11 +13,11 @@
           </div>
           <p v-show="showPNameWarn" class="warning-item">请填写项目名称</p>
           <div class="form-item des-item" :class="{'focus-item':currentFocus==2}">
-            <textarea v-model="project.description" placeholder="项目简介。例如：打算开发一个微信应用，市面上可参考的产品是 XXX，针对 XXX 领域和人群，主要目的是为了 XXX ..." @focus="currentFocus=2"></textarea>
+            <textarea v-model="project.desc" placeholder="项目简介。例如：打算开发一个微信应用，市面上可参考的产品是 XXX，针对 XXX 领域和人群，主要目的是为了 XXX ..." @focus="currentFocus=2"></textarea>
           </div>
           <p v-show="showDescWarn" class="warning-item">请填写项目基本描述</p>
           <div class="form-item ref-item" :class="{'focus-item':currentFocus==3}">
-            <input type="text" v-model="project.ref" placeholder="参考网站/产品" @focus="currentFocus=3">
+            <input type="text" v-model="project.ref_url" placeholder="参考网站/产品" @focus="currentFocus=3">
           </div>
         </form>
       </div>
@@ -51,13 +51,15 @@
 </template>
 <script>
 import navbar from "../components/navbar.vue"
+import axios from "axios"
+import qs from "qs"
 export default {
   data() {
     return {
       project: {
         name: null,
-        description: null,
-        ref: null
+        desc: null,
+        ref_url: null
       },
       showPNameWarn: false,
       showDescWarn: false,
@@ -89,12 +91,14 @@ export default {
   },
   created() {
     this.$store.commit('changeShowBtn', { value: false });
-    if (!window.localStorage.getItem('token')) {
-      console.log(1);
+    // if (!window.localStorage.getItem('token')) {
+    //   console.log(1);
+    //   this.unLogin = true;
+    // }
+    // console.log(window.localStorage.getItem('token'));
+    if (!this.$store.state.user.id) {
       this.unLogin = true;
     }
-    console.log(window.localStorage.getItem('token'));
-
   },
   destroyed() {
     this.$store.commit('changeShowBtn', { value: true });
@@ -107,19 +111,38 @@ export default {
 
     },
     p_submit() {
+      var self = this;
       let project = this.$store.state.project;
+      project.user_id = this.$store.state.user.id;
       if (!this.project.name) {
         this.showPNameWarn = true;
+        return;
+      } else {
+        project.name = this.project.name;
       }
       if (!this.project.desc) {
         this.showDescWarn = true;
+        return;
+      } else {
+        project.desc = this.project.desc;
       }
-      if (!this.project.cycle) {
+      if (!this.currentCycle) {
         this.showCycleWarn = true;
+        return;
+      } else {
+        project.period = this.currentCycle;
       }
+      project.ref_url = this.project.ref_url;
       if (!this.unLogin) {
 
       }
+
+      axios.post('/user/create', qs.stringify(project)).then((response) => {
+
+        if (response.status == 200 && response.data.status == 1) {
+          self.$router.push({ path: 'myProject' })
+        }
+      })
     }
   }
 }

@@ -30,19 +30,19 @@ export default {
     return {
       typeList: [{
         label: '网站开发',
-        value: '网站开发'
+        value: '1'
       }, {
         label: '移动开发',
-        value: '移动开发'
+        value: '2'
       }, {
         label: '微信开发',
-        value: '微信开发'
+        value: '3'
       }, {
         label: '产品资讯',
-        value: '产品资讯'
+        value: '4'
       }, {
         label: '其他类别',
-        value: '其他类别'
+        value: '5'
       }],
       tradeList: [{
         label: '社交',
@@ -68,6 +68,10 @@ export default {
     navbar: navbar
   },
   created() {
+    if (!this.$store.state.user.id) {
+      this.$router.push({ path: 'login' });
+      return;
+    }
     this.$store.commit('changeShowBtn', { value: false });
 
   },

@@ -2,7 +2,7 @@
   <div class="app">
     <navbar></navbar>
     <div class="content">
-      <form class="login-form" onsubmit="return false">
+      <div class="login-form">
         <h3>登录软件外包</h3>
         <div class="form-item">
           <input type="text" v-model.trim="user.mobile" placeholder="手机号">
@@ -16,7 +16,7 @@
         <div class="form-item submit-item">
           <a class="p-login" @click="p_submit">登录</a>
         </div>
-      </form>
+      </div>
       <div class="company-code">
         <img src="../../static/img/qrcode_2.png" height="579" width="750" alt="">
       </div>
@@ -26,6 +26,7 @@
 <script>
 import navbar from "../components/navbar.vue"
 import axios from "axios"
+import qs from "qs"
 export default {
   data() {
     return {
@@ -48,16 +49,21 @@ export default {
       let reg = /^1[3|4|5|7|8][0-9]{9}$/;
       if (!reg.test(mobile)) {
         this.showNameWarn = true;
+        return;
       }
       if (!code) {
         this.showCodeWarn = true;
+        return;
       }
-      var data = { mobile: "15039112042", code: "8888" };
-      // var data = "1";
-      axios.post('/user/login', data).then((response) => {
-        self.$store.commit('changeShowLogin', { value: true });
+      // var data = { mobile: "15039112042", code: "8888" };
+      let data = { mobile: mobile, code: 8888 }
+      axios.post('/user/login', qs.stringify(data)).then((response) => {
         console.log(response);
-        localStorage.setItem('token', response.token);
+        if (response.status == 200 && response.data.status == 1) {
+          self.$store.commit('changeShowLogin', { value: true });
+          self.$store.commit('changeUser', response.data);
+          this.$router.push({ path: 'myProject' });
+        }
       })
     },
     get_code() {
